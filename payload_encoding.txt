@@ -1,0 +1,13 @@
+$fileBytes = [System.IO.File]::ReadAllBytes("Downloads\Rubeus.exe")
+$firstEncode = [System.Convert]::ToBase64String($fileBytes)
+$doubleEncode = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($firstEncode))
+Set-Content -Path "double_encoded.txt" -Value $doubleEncode
+
+
+----
+
+$doubleEncode = Get-Content -Path "double_encoded.txt" -Raw
+$firstDecodeBytes = [System.Convert]::FromBase64String($doubleEncode)
+$firstDecodeString = [System.Text.Encoding]::UTF8.GetString($firstDecodeBytes)
+$originalBytes = [System.Convert]::FromBase64String($firstDecodeString)
+[System.IO.File]::WriteAllBytes("rebuilt.exe", $originalBytes)
